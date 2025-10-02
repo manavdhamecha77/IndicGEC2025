@@ -1,0 +1,58 @@
+# IndicGEC2025 - Exact Requirements (Pinned Versions)
+# Generated from working environment
+
+# Core ML Libraries
+torch==2.6.0
+transformers==4.56.2
+datasets==4.1.1
+tokenizers==0.22.1
+safetensors==0.6.2
+sentencepiece==0.2.1
+
+# Data Processing
+pandas==2.3.3
+numpy==2.1.2
+scipy==1.15.3
+
+# Training & Evaluation
+accelerate==1.10.1
+evaluate==0.4.6
+sacrebleu==2.5.1
+nltk==3.9.1
+jiwer==4.0.0
+
+# Jupyter & Notebooks
+jupyter==1.1.1
+jupyterlab==4.4.9
+notebook==7.4.7
+ipykernel==6.30.1
+ipython==8.37.0
+ipywidgets==8.1.7
+
+# Utilities
+tqdm==4.67.1
+click==8.3.0
+PyYAML==6.0.3
+requests==2.32.5
+
+# Visualization & Analysis
+matplotlib==3.10.6
+seaborn==0.13.2
+
+# Text Processing
+regex==2025.9.18
+lxml==6.0.2
+
+# Development Tools
+psutil==7.1.0
+filelock==3.13.1
+
+# Additional Dependencies
+huggingface-hub==0.35.3
+protobuf==5.29.5
+certifi==2025.8.3
+charset-normalizer==3.4.3
+idna==3.10
+urllib3==2.5.0
+packaging==25.0
+typing-extensions==4.12.2
