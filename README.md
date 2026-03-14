@@ -22,8 +22,9 @@ Data (`train.csv`, `dev.csv`) is available per language folder. Test data will b
 
 ## Our Approach — Team Horizon (BHASHA 2025)
 
-> **Paper:** *Team Horizon at BHASHA Task 1: Multilingual IndicGEC with Transformer-based Grammatical Error Correction Models*
-> Manav Dhamecha, Gaurav Damor, Sunil Choudhary, Pruthwik Mishra, SVNIT
+> **Paper:** *Team Horizon at BHASHA Task 1: Multilingual IndicGEC with Transformer-based Grammatical Error Correction Models*  
+> **Authors:** Manav Dhamecha, Gaurav Damor, Sunil Choudhary, Pruthwik Mishra (SVNIT)  
+> **Paper Link:** https://aclanthology.org/2025.bhasha-1.14.pdf
 
 We used a hybrid pipeline:
 
@@ -40,6 +41,18 @@ We used a hybrid pipeline:
 Key finding: `mT5-small` outperformed `IndicBART` on Tamil and Malayalam despite IndicBART being Indic-specific, likely due to better fine-tuning with augmented data.
 
 ---
+
+---
+
+## Hugging Face Models
+
+The fine-tuned models are available on Hugging Face:
+
+- Hindi GEC → https://huggingface.co/manavdhamecha77/GEC-mT5-Small-Hindi
+- Bangla GEC → https://huggingface.co/manavdhamecha77/GEC-mT5-Small-Bangla
+- Tamil GEC → https://huggingface.co/manavdhamecha77/GEC-mT5-Small-Tamil
+
+Each model is fine-tuned from **mT5-small** using our synthetic error augmentation pipeline.
 
 ## Dataset Generation
 
