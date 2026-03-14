@@ -1,50 +1,107 @@
-# IndicGEC2025
+# IndicGEC 2025 - Multilingual Grammatical Error Correction
 
-Grammatical Error Correction for Indian languages under low resource setting with less than 1000 training samples for each language. Indian languages are low resource and this task tries to imitate that.
+Part of the  **BHASHA 2025 Shared Task 1** , co-located with the 1st Workshop on Benchmarks, Harmonization, Annotation, and Standardization for Human-Centric AI in Indian Languages.
 
-The training (train.csv) and validation (dev.csv) are available under folder for each language.
-The final testing data will be available later.
+---
 
-The languages available are:
+## Task Overview
 
-1. **Hindi**
-2. **Telugu**
-3. **Bangla** 
-4. **Malayalam**
-5. **Tamil**
+Grammatical Error Correction (GEC) for five Indian languages under a **low-resource setting** (< 1000 training samples per language). Tamil is under an **extreme low-resource** setting with fewer than 100 training samples.
 
-Tamil GEC is under extreme low-resource setting with less than 100 training samples.
+| Language  | Train | Dev |
+| --------- | ----- | --- |
+| Hindi     | 599   | 107 |
+| Telugu    | 599   | 100 |
+| Bangla    | 598   | 101 |
+| Malayalam | 300   | 50  |
+| Tamil     | 91    | 16  |
 
-This is part of the Shared Task co-located with 1st BHASHA workshop 2025.
+Data (`train.csv`, `dev.csv`) is available per language folder. Test data will be released later.
 
-The urls for the competitions are:
+---
 
-1. [Hindi](https://www.codabench.org/competitions/10473/?secret_key=1eb6b6b4-bdcb-4d26-8d63-2cb826d7af9e)
+## Our Approach — Team Horizon (BHASHA 2025)
 
-2. [Malayalam](https://www.codabench.org/competitions/10475/?secret_key=151c0997-3c00-4068-b351-b8cf0bf03052)
+> **Paper:** *Team Horizon at BHASHA Task 1: Multilingual IndicGEC with Transformer-based Grammatical Error Correction Models*
+> Manav Dhamecha, Gaurav Damor, Sunil Choudhary, Pruthwik Mishra, SVNIT
 
-3. [Telugu](https://www.codabench.org/competitions/10675/?secret_key=97557fab-4caa-4297-8344-ae0b8904b1b8)
+We used a hybrid pipeline:
 
-4. [Bangla](https://www.codabench.org/competitions/10482/?secret_key=f4ee606f-a9cb-4092-ad1c-f3cc82d5f5c5)
+**Models:** `mT5-small` and `IndicBART` — both lightweight (≤ 300M parameters), publicly available, and fast to fine-tune.
 
-5. [Tamil](https://www.codabench.org/competitions/10486/?secret_key=e24a9d08-d78c-4bb4-b487-20c9ed012173)
+**Synthetic Data Augmentation:** Since official data is tiny (< 1k samples per language), we built a rule-based error injection pipeline across **10 linguistic categories** — spelling, tense, person, number, gender, case, parts-of-speech, missing/extra words, punctuation, and semantic errors. This scaled each language to ~10k–12k parallel pairs.
 
-## Rules for participation
+**Results (GLEU scores on official test sets):**
 
-1. Max Team Size: **4**
-2. An individual cannot be part of multiple teams.
-3. Submission is from one CodaBench account.
-4. CodaBench account is required for participation.
-5. Google Form for registration of teams: https://forms.gle/gftDLz69Vv9aB3AEA.
+| Tamil       | Malayalam   | Bangla      | Hindi       | Telugu      |
+| ----------- | ----------- | ----------- | ----------- | ----------- |
+| 86.03 (5th) | 84.36 (8th) | 82.69 (6th) | 80.44 (7th) | 72.00 (6th) |
 
-## Evaluation Criteria
+Key finding: `mT5-small` outperformed `IndicBART` on Tamil and Malayalam despite IndicBART being Indic-specific, likely due to better fine-tuning with augmented data.
 
-**GLEU score** will be used for evaluation
+---
 
-Your submission should contatin a .zip of **predictions.csv** file. The **predictions.csv** file should contain 2 columns named
-**Input sentence** and **Output sentence**.
-Submissions that do not conform to this requirements will not be evaluated by the system.
+## Dataset Generation
 
-All participating teams are expected to submit a system paper describing methodologies adopted and findings.
+Since official training data is very limited, we supplemented with clean sentences from **AI4Bharat IndicCorpV2** and  **Indic Wikipedia** , then injected synthetic errors to create (incorrect → correct) pairs.
 
-P.S:- All characters which are not in **native script** will be counted as **incorrect**.
+The scripts in this repo help you **build your own clean corpus** from IndicCorpV2 for any Indic language, which can then be used as gold references for error injection.
+
+### Quickstart
+
+```bash
+pip install datasets tqdm
+python multilingual_gec_dataset_builder.py
+```
+
+Or open `multilingual_gec_dataset_builder.ipynb` for a step-by-step notebook.
+
+### Change language
+
+Edit just these lines in the script (or notebook Step 1):
+
+```python
+LANGUAGE_SPLIT = "tam_Taml"   # change this
+TARGET_LINES   = 800_000      # how many lines to collect
+```
+
+| Language  | Split name   |
+| --------- | ------------ |
+| Tamil     | `tam_Taml` |
+| Telugu    | `tel_Telu` |
+| Malayalam | `mal_Mlym` |
+| Kannada   | `kan_Knda` |
+| Bengali   | `ben_Beng` |
+| Hindi     | `hin_Deva` |
+| Gujarati  | `guj_Gujr` |
+| Marathi   | `mar_Deva` |
+| Punjabi   | `pan_Guru` |
+| Odia      | `ory_Orya` |
+| Urdu      | `urd_Arab` |
+| Assamese  | `asm_Beng` |
+| Maithili  | `mai_Deva` |
+| Santali   | `sat_Olck` |
+
+The pipeline: streams from IndicCorpV2 → removes blank lines → converts ASCII digits to native script → saves output. The `output/` directory is created automatically.
+
+> **Note:** All characters not in native script are counted as incorrect per task rules — the digit conversion step handles this.
+
+---
+
+## Evaluation
+
+**GLEU score** is used for evaluation (robust for short corrections and small datasets).
+
+---
+
+## Citation
+
+```bibtex
+@inproceedings{dhamecha2025teamhorizon,
+  title     = {Team Horizon at BHASHA Task 1: Multilingual IndicGEC with Transformer-based Grammatical Error Correction Models},
+  author    = {Dhamecha, Manav and Damor, Gaurav and Choudhary, Sunil and Mishra, Pruthwik},
+  booktitle = {Proceedings of the 1st Workshop on BHASHA 2025},
+  pages     = {142--146},
+  year      = {2025}
+}
+```
